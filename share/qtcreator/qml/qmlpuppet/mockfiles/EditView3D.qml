@@ -82,6 +82,7 @@ Window {
                                                    "z": 1});
                 editView.usePerspective = Qt.binding(function() {return usePerspective;});
                 editView.showSceneLight = Qt.binding(function() {return showEditLight;});
+                editView.cameraZoomFactor = Qt.binding(function() {return cameraControl._zoomFactor;});
 
                 selectionBoxes.length = 0;
             }

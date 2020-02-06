@@ -35,6 +35,11 @@ View3D {
     property alias sceneHelpers: sceneHelpers
     property alias perpectiveCamera: scenePerspectiveCamera
     property alias orthoCamera: sceneOrthoCamera
+    property double cameraZoomFactor;
+
+    // Empirical cameraZoomFactor values that happen every near consistent mouse wheel scrolls
+    readonly property var grid_thresholds: [0.1, 0.265, 0.55, 1.10, 2.35, 4.9, 10.0, 20.5, 42.0, 85.0, 999999.0]
+    property var thresIdx: 1
 
     camera: usePerspective ? scenePerspectiveCamera : sceneOrthoCamera
 
@@ -43,8 +48,12 @@ View3D {
 
         HelperGrid {
             id: helperGrid
-            lines: 50
-            step: 50
+            lines: 20 + Math.round((1 - subdivAlpha) * 20);
+            step: {
+                thresIdx = Math.max(1, grid_thresholds.findIndex(v => v > cameraZoomFactor));
+                return 100 * grid_thresholds[0] * Math.pow(2, thresIdx - 1);
+            }
+            subdivAlpha: (grid_thresholds[thresIdx] - cameraZoomFactor) / (grid_thresholds[thresIdx] - grid_thresholds[thresIdx - 1]);
         }
 
         PointLight {
